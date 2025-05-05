@@ -15,11 +15,12 @@ pygame.display.set_caption('Space Game') # Setting bar title of game window #
 # Global game objects and variables
 CLOCK = pygame.time.Clock() # Creating a 'clock' variable that tracks time #
 FONT = pygame.font.SysFont('Comic Sans MS', 30)
+FONT2 = pygame.font.SysFont('Impact', 60)
 BACKGROUND_IMAGE = pygame.image.load("images/background.jpg")
 
 GAME.SCREEN = pygame.display.get_surface() # Where graphics/visual output displayed #
 GAME.EXIT = False
-GAME.STATE = "Start Game"
+GAME.STATE = "Start Game" 
 
 '''-------------------------- Game Loop --------------------------'''
 while not GAME.EXIT:
@@ -31,7 +32,8 @@ while not GAME.EXIT:
 
     # Process events
     for event in pygame.event.get():
-        if event.type == CONSTANTS.QUIT:
+        #set game exit true if player pressed escape
+        if event.type == pygame.QUIT:
             GAME.EXIT = True
 
     # Collect user input
@@ -39,8 +41,18 @@ while not GAME.EXIT:
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos()) # returns (x,y)
     mouse_buttons = pygame.mouse.get_pressed() # return (0, 0, 0) if left button click
 
-    #GAME.SCREEN.blit(BACKGROUND_IMAGE, (0,0))
-    GAME.SCREEN.fill((0, 0, 255))
+    GAME.SCREEN.blit(BACKGROUND_IMAGE, (0,0)) #top left image
+    #GAME.SCREEN.fill((0, 0, 255)) RGB 
+
+    if GAME.STATE == "Start Game":
+        start_text = FONT2.render("Press Enter to Start Game", True, (255, 0, 0))
+        GAME.SCREEN.blit(start_text, (300,300))
+        if pressed[pygame.K_RETURN]:
+            GAME.STATE = "Running"
+
+    elif GAME.STATE == "Running":
+        mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
+        GAME.SCREEN.blit(mouse_text,(10,10))
 
     pygame.display.flip() #all drawing that was done off screen is now flipped onto the screen
     
