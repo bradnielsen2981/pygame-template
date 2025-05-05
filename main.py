@@ -3,6 +3,7 @@ import pygame
 import pygame.locals as CONSTANTS
 import os, sys, random, time, math
 import game_globals as GAME
+from spaceship import Spaceship
 
 '''----------------------- Initialisation --------------------------'''
 # Initialising imported Pygame modules (basically getting things started) #
@@ -49,8 +50,14 @@ while not GAME.EXIT:
         GAME.SCREEN.blit(start_text, (300,300))
         if pressed[pygame.K_RETURN]:
             GAME.STATE = "Running"
+            GAME.STARTTIME = time.time()
+            GAME.PLAYER = Spaceship(512, 700)
 
     elif GAME.STATE == "Running":
+        
+        GAME.PLAYER.update(pressed) #update player position
+        GAME.PLAYER.draw()
+
         mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
         GAME.SCREEN.blit(mouse_text,(10,10))
 
