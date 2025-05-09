@@ -37,8 +37,8 @@ while not GAME.EXIT:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 GAME.EXIT = True
-            if event.type == CONSTANTS.QUIT:
-                GAME.EXIT = True
+        if event.type == pygame.QUIT:
+            GAME.EXIT = True
 
     # Collect user input
     pressed = pygame.key.get_pressed() #returns []
