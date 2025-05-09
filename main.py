@@ -3,14 +3,14 @@ import pygame
 import pygame.locals as CONSTANTS
 import os, sys, random, time, math
 import game_globals as GAME
-from spaceship import Spaceship
+from spaceship import Spaceship #when you from - you skip using the namespace
 
 '''----------------------- Initialisation --------------------------'''
 # Initialising imported Pygame modules (basically getting things started) #
 pygame.init()
 pygame.mixer.init()
 pygame.font.init()
-pygame.display.set_mode((1024, 768))
+pygame.display.set_mode((1024, 680))
 pygame.display.set_caption('Space Game') # Setting bar title of game window #
 
 # Global game objects and variables
@@ -34,8 +34,11 @@ while not GAME.EXIT:
     # Process events
     for event in pygame.event.get():
         #set game exit true if player pressed escape
-        if event.type == pygame.QUIT:
-            GAME.EXIT = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                GAME.EXIT = True
+            if event.type == CONSTANTS.QUIT:
+                GAME.EXIT = True
 
     # Collect user input
     pressed = pygame.key.get_pressed() #returns []
@@ -51,8 +54,7 @@ while not GAME.EXIT:
         if pressed[pygame.K_RETURN]:
             GAME.STATE = "Running"
             GAME.STARTTIME = time.time()
-            GAME.PLAYER = Spaceship(512, 700)
-
+            GAME.PLAYER = Spaceship(512, 530) #CREATES OUR SPACESHIP OBJECT
     elif GAME.STATE == "Running":
         
         GAME.PLAYER.update(pressed) #update player position
