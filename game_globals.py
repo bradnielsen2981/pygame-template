@@ -2,7 +2,7 @@ import pygame
 
 # Global game objects and variables
 SCREEN = None
-BULLET_GROUP = None
+LASER_GROUP = None
 ENEMY_GROUP = None
 PLAYER = None
 EXIT = False

@@ -1,4 +1,5 @@
 ''' Main Game Code '''
+print('\33c')
 import pygame
 import pygame.locals as CONSTANTS
 import os, sys, random, time, math
@@ -19,6 +20,7 @@ FONT = pygame.font.SysFont('Comic Sans MS', 30)
 FONT2 = pygame.font.SysFont('Impact', 60)
 BACKGROUND_IMAGE = pygame.image.load("images/background.jpg")
 
+GAME.LASER_GROUP = pygame.sprite.Group() # Create a group for lasers
 GAME.SCREEN = pygame.display.get_surface() # Where graphics/visual output displayed #
 GAME.EXIT = False
 GAME.STATE = "Start Game" 
@@ -59,6 +61,9 @@ while not GAME.EXIT:
         
         GAME.PLAYER.update(pressed) #update player position
         GAME.PLAYER.draw()
+
+        GAME.LASER_GROUP.update() #update all lasers
+        GAME.LASER_GROUP.draw(GAME.SCREEN) #draw all lasers
 
         mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
         GAME.SCREEN.blit(mouse_text,(10,10))

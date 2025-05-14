@@ -1,6 +1,7 @@
 #Create a spaceship object that will be used to shoot the aliens
 import pygame
 import game_globals as GAME
+from laser import Laser
 
 # This class inherits from the pygame sprite class
 class Spaceship(pygame.sprite.Sprite):
@@ -23,6 +24,10 @@ class Spaceship(pygame.sprite.Sprite):
             self.rect.x += self.speed
         boundary = GAME.SCREEN.get_rect()
         is_outside = GAME.is_sprite_outside_rectangle(self, boundary, wrap=False, align=True)
+
+        if pressed[pygame.K_SPACE]:
+            laser = Laser(self.rect.centerx, self.rect.y)
+
         return
     
     def draw(self):
