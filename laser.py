@@ -17,6 +17,8 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y = self.rect.y - self.speed
+        if GAME.is_sprite_outside_rectangle(self, GAME.SCREEN.get_rect()):
+            self.kill()
 
     def draw(self):
         GAME.SCREEN.blit(self.image, self.rect)

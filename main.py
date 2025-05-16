@@ -5,6 +5,7 @@ import pygame.locals as CONSTANTS
 import os, sys, random, time, math
 import game_globals as GAME
 from spaceship import Spaceship #when you from - you skip using the namespace
+from enemy import Enemy
 
 '''----------------------- Initialisation --------------------------'''
 # Initialising imported Pygame modules (basically getting things started) #
@@ -20,6 +21,7 @@ FONT = pygame.font.SysFont('Comic Sans MS', 30)
 FONT2 = pygame.font.SysFont('Impact', 60)
 BACKGROUND_IMAGE = pygame.image.load("images/background.jpg")
 
+GAME.ENEMY_GROUP = pygame.sprite.Group() # Create a group for enemies
 GAME.LASER_GROUP = pygame.sprite.Group() # Create a group for lasers
 GAME.SCREEN = pygame.display.get_surface() # Where graphics/visual output displayed #
 GAME.EXIT = False
@@ -57,6 +59,7 @@ while not GAME.EXIT:
             GAME.STATE = "Running"
             GAME.STARTTIME = time.time()
             GAME.PLAYER = Spaceship(512, 530) #CREATES OUR SPACESHIP OBJECT
+    
     elif GAME.STATE == "Running":
         
         GAME.PLAYER.update(pressed) #update player position
@@ -65,8 +68,15 @@ while not GAME.EXIT:
         GAME.LASER_GROUP.update() #update all lasers
         GAME.LASER_GROUP.draw(GAME.SCREEN) #draw all lasers
 
+        GAME.ENEMY_GROUP.update()
+        GAME.ENEMY_GROUP.draw(GAME.SCREEN)
+
         mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
         GAME.SCREEN.blit(mouse_text,(10,10))
+
+        if (time.time() - GAME.STARTTIME) > 2:
+            enemy = Enemy(0,0)
+            GAME.ENEMY_GROUP.add(enemy)
 
     pygame.display.flip() #all drawing that was done off screen is now flipped onto the screen
     
