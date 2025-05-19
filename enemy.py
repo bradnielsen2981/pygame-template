@@ -17,7 +17,10 @@ class Enemy(pygame.sprite.Sprite):
         self.angle = 0
 
     def update(self):
-        return
+        self.rect.x += self.speed
+        if GAME.is_sprite_outside_rectangle(self, GAME.SCREEN.get_rect()):
+            self.speed = -self.speed
+            self.rect.y += 50
     
     def draw(self):
         GAME.SCREEN.blit(self.image, self.rect)

@@ -54,12 +54,15 @@ while not GAME.EXIT:
 
     if GAME.STATE == "Start Game":
         start_text = FONT2.render("Press Enter to Start Game", True, (255, 0, 0))
-        GAME.SCREEN.blit(start_text, (300,300))
+        GAME.SCREEN.blit(start_text, (200,300))
+
         if pressed[pygame.K_RETURN]:
             GAME.STATE = "Running"
             GAME.STARTTIME = time.time()
             GAME.PLAYER = Spaceship(512, 530) #CREATES OUR SPACESHIP OBJECT
-    
+            enemy = Enemy(0,0)
+            GAME.ENEMY_GROUP.add(enemy)
+
     elif GAME.STATE == "Running":
         
         GAME.PLAYER.update(pressed) #update player position
@@ -72,11 +75,7 @@ while not GAME.EXIT:
         GAME.ENEMY_GROUP.draw(GAME.SCREEN)
 
         mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
-        GAME.SCREEN.blit(mouse_text,(10,10))
-
-        if (time.time() - GAME.STARTTIME) > 2:
-            enemy = Enemy(0,0)
-            GAME.ENEMY_GROUP.add(enemy)
+        GAME.SCREEN.blit(mouse_text,(10,10)) 
 
     pygame.display.flip() #all drawing that was done off screen is now flipped onto the screen
     
