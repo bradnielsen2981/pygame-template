@@ -28,6 +28,11 @@ class Spaceship(pygame.sprite.Sprite):
         if pressed[pygame.K_SPACE]:
             laser = Laser(self.rect.centerx, self.rect.y)
 
+        #collision between sprite and a sprite group
+        if pygame.sprite.spritecollide(self, GAME.ENEMY_GROUP, True):
+            self.kill()
+            GAME.STATE = "Game Over"
+
         return
     
     def draw(self):

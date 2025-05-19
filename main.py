@@ -26,6 +26,8 @@ GAME.LASER_GROUP = pygame.sprite.Group() # Create a group for lasers
 GAME.SCREEN = pygame.display.get_surface() # Where graphics/visual output displayed #
 GAME.EXIT = False
 GAME.STATE = "Start Game" 
+create_enemy_event = pygame.USEREVENT + 1 # Create a custom event for creating enemies
+restart_event = pygame.USEREVENT + 2 # Create a custom event for
 
 '''-------------------------- Game Loop --------------------------'''
 while not GAME.EXIT:
@@ -43,6 +45,8 @@ while not GAME.EXIT:
                 GAME.EXIT = True
         if event.type == pygame.QUIT:
             GAME.EXIT = True
+        if event.type == create_enemy_event:
+            enemy = Enemy(0, 0)
 
     # Collect user input
     pressed = pygame.key.get_pressed() #returns []
@@ -60,22 +64,29 @@ while not GAME.EXIT:
             GAME.STATE = "Running"
             GAME.STARTTIME = time.time()
             GAME.PLAYER = Spaceship(512, 530) #CREATES OUR SPACESHIP OBJECT
-            enemy = Enemy(0,0)
-            GAME.ENEMY_GROUP.add(enemy)
+            pygame.time.set_timer(create_enemy_event, 1000) #create a looping time
 
     elif GAME.STATE == "Running":
         
         GAME.PLAYER.update(pressed) #update player position
-        GAME.PLAYER.draw()
-
         GAME.LASER_GROUP.update() #update all lasers
-        GAME.LASER_GROUP.draw(GAME.SCREEN) #draw all lasers
-
         GAME.ENEMY_GROUP.update()
+
+        #check for collision between lasers and enemies
+        pygame.sprite.groupcollide(GAME.LASER_GROUP, GAME.ENEMY_GROUP, True, True)
+        
+        GAME.PLAYER.draw()
+        GAME.LASER_GROUP.draw(GAME.SCREEN) #draw all lasers
         GAME.ENEMY_GROUP.draw(GAME.SCREEN)
 
         mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
-        GAME.SCREEN.blit(mouse_text,(10,10)) 
+        GAME.SCREEN.blit(mouse_text,(10,10))
+    
+    elif GAME.STATE == "Game Over":
+        #print text saying game over
+        #use a timer to then set the game state
+        GAME.STATE = "Start Game"
+
 
     pygame.display.flip() #all drawing that was done off screen is now flipped onto the screen
     

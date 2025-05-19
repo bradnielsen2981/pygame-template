@@ -10,17 +10,21 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = 5
         self.image = pygame.image.load("images/alien.png")
         self.image.convert_alpha() # transparent background
-        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.angle = 0
+        GAME.ENEMY_GROUP.add(self)
 
     def update(self):
         self.rect.x += self.speed
-        if GAME.is_sprite_outside_rectangle(self, GAME.SCREEN.get_rect()):
+        if GAME.is_sprite_outside_rectangle(self, GAME.SCREEN.get_rect(), align=True):
+            self.speed *= 1.2
             self.speed = -self.speed
-            self.rect.y += 50
+            self.rect.y += 80
+            if self.rect.y > GAME.SCREEN.get_height():
+                self.kill()
     
     def draw(self):
         GAME.SCREEN.blit(self.image, self.rect)
