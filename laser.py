@@ -14,6 +14,7 @@ class Laser(pygame.sprite.Sprite):
         self.speed = 10
         self.angle = 0
         GAME.LASER_GROUP.add(self) #add the whole object to the Sprite group
+        GAME.LASERSOUND.play(0)
 
     def update(self):
         self.rect.y = self.rect.y - self.speed

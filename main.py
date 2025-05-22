@@ -26,6 +26,9 @@ GAME.LASER_GROUP = pygame.sprite.Group() # Create a group for lasers
 GAME.SCREEN = pygame.display.get_surface() # Where graphics/visual output displayed #
 GAME.EXIT = False
 GAME.STATE = "Start Game" 
+GAME.MUSIC = pygame.mixer.Sound("sounds/sunsetreverie.mp3")
+GAME.LASERSOUND = pygame.mixer.Sound("sounds/laser.mp3")
+
 create_enemy_event = pygame.USEREVENT + 1 # Create a custom event for creating enemies
 restart_event = pygame.USEREVENT + 2 # Create a custom event for
 
@@ -69,6 +72,7 @@ while not GAME.EXIT:
             GAME.STARTTIME = time.time()
             GAME.PLAYER = Spaceship(512, 530) #CREATES OUR SPACESHIP OBJECT
             pygame.time.set_timer(create_enemy_event, 1000) #create a looping time
+            GAME.MUSIC.play(-1) #play music in a loop
 
     elif GAME.STATE == "Running":
         
@@ -77,20 +81,32 @@ while not GAME.EXIT:
         GAME.ENEMY_GROUP.update()
 
         #check for collision between lasers and enemies
-        pygame.sprite.groupcollide(GAME.LASER_GROUP, GAME.ENEMY_GROUP, True, True)
-        
+        collided = pygame.sprite.groupcollide(GAME.LASER_GROUP, GAME.ENEMY_GROUP, True, True)
+        #for each enemy collided add to score
+        for laser, enemies in collided.items():
+            for enemy in enemies:
+                GAME.SCORE += 1
+
         GAME.PLAYER.draw()
         GAME.LASER_GROUP.draw(GAME.SCREEN) #draw all lasers
         GAME.ENEMY_GROUP.draw(GAME.SCREEN)
 
-        mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
-        GAME.SCREEN.blit(mouse_text,(10,10))
+        #mouse_text = FONT.render("X: " + str(mouse_pos[0]) + " Y: " + str(mouse_pos[1]),True,(255,0,0))
+        #GAME.SCREEN.blit(mouse_text,(10,10))
+
+        time_text = FONT.render("Time: " + str(int(time.time() - GAME.STARTTIME)),True,(255,0,0))
+        GAME.SCREEN.blit(time_text,(10,10))
+
+        score_text = FONT.render("Score: " + str(GAME.SCORE),True,(255,255,0))
+        GAME.SCREEN.blit(score_text,(10,50))
     
     elif GAME.STATE == "Game Over":
         #print text saying game over
         end_text = FONT2.render("Game Over", True, (255, 0, 0))
         GAME.SCREEN.blit(end_text, (200,300))
         pygame.time.set_timer(restart_event, 3000)
+
+        GAME.MUSIC.stop()
 
 
     pygame.display.flip() #all drawing that was done off screen is now flipped onto the screen

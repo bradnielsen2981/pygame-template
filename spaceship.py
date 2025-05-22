@@ -16,8 +16,10 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.angle = 0
+        self.timer = 0
 
     def update(self, pressed):
+
         if pressed[pygame.K_a]:
             self.rect.x -= self.speed
         if pressed[pygame.K_d]:
@@ -25,8 +27,15 @@ class Spaceship(pygame.sprite.Sprite):
         boundary = GAME.SCREEN.get_rect()
         is_outside = GAME.is_sprite_outside_rectangle(self, boundary, wrap=False, align=True)
 
+        if self.timer > 0:
+            self.timer += 1
+            if self.timer > 30:
+                self.timer = 0      
+
         if pressed[pygame.K_SPACE]:
-            laser = Laser(self.rect.centerx, self.rect.y)
+            if self.timer == 0:
+                laser = Laser(self.rect.centerx, self.rect.y)
+                self.timer = 1    
 
         #collision between sprite and a sprite group
         if pygame.sprite.spritecollide(self, GAME.ENEMY_GROUP, True):
