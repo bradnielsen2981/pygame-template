@@ -47,6 +47,10 @@ while not GAME.EXIT:
             GAME.EXIT = True
         if event.type == create_enemy_event:
             enemy = Enemy(0, 0)
+        if event.type == restart_event:
+            GAME.STATE = "Start Game"
+            GAME.ENEMY_GROUP.empty()
+            pygame.time.set_timer(restart_event, 0)
 
     # Collect user input
     pressed = pygame.key.get_pressed() #returns []
@@ -84,8 +88,9 @@ while not GAME.EXIT:
     
     elif GAME.STATE == "Game Over":
         #print text saying game over
-        #use a timer to then set the game state
-        GAME.STATE = "Start Game"
+        end_text = FONT2.render("Game Over", True, (255, 0, 0))
+        GAME.SCREEN.blit(end_text, (200,300))
+        pygame.time.set_timer(restart_event, 3000)
 
 
     pygame.display.flip() #all drawing that was done off screen is now flipped onto the screen
