@@ -14,7 +14,7 @@ class Platform(pygame.sprite.Sprite):
 
     #moving platform?
     def update(self):
-        self.rect.y += 1
+        #self.rect.y += 1 #make the platforms move
 
         if self.rect.y > 768:
             self.kill()
