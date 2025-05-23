@@ -6,6 +6,7 @@ import os, sys, random, time, math
 import game_globals as GAME
 from spaceship import Spaceship #when you from - you skip using the namespace
 from enemy import Enemy
+from boss import Boss
 
 '''----------------------- Initialisation --------------------------'''
 # Initialising imported Pygame modules (basically getting things started) #
@@ -32,6 +33,8 @@ GAME.LASERSOUND = pygame.mixer.Sound("sounds/laser.mp3")
 create_enemy_event = pygame.USEREVENT + 1 # Create a custom event for creating enemies
 restart_event = pygame.USEREVENT + 2 # Create a custom event for
 
+is_boss = False
+
 '''-------------------------- Game Loop --------------------------'''
 while not GAME.EXIT:
 
@@ -50,6 +53,11 @@ while not GAME.EXIT:
             GAME.EXIT = True
         if event.type == create_enemy_event:
             enemy = Enemy(0, 0)
+            if GAME.SCORE > 1 and is_boss == False:
+                print("Create boss")
+                is_boss = True
+                b = Boss(0, 0)
+
         if event.type == restart_event:
             GAME.STATE = "Start Game"
             GAME.ENEMY_GROUP.empty()
