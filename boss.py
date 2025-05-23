@@ -11,6 +11,9 @@ class Boss(pygame.sprite.Sprite):
         self.image = pygame.image.load("images/alien.png")
         self.image.convert_alpha() # transparent background
         self.image = pygame.transform.scale(self.image, (80, 80))
+
+        self.original_image = self.image.copy() # Store the original image for rotation
+
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -19,19 +22,18 @@ class Boss(pygame.sprite.Sprite):
         GAME.ENEMY_GROUP.add(self)
 
     def update(self):
-        #find the players position
+
         playerposition = pygame.Vector2(GAME.PLAYER.rect.center)
-        #find the direction to the player
         self.direction = playerposition - pygame.Vector2(self.rect.center)
-        #normalize the direction vector
         self.direction = self.direction.normalize()
-        #move the boss towards the player
         self.rect.x += self.direction.x * self.speed
         self.rect.y += self.direction.y * self.speed
-        #self.angle = self.direction.angle_to(pygame.Vector2(1, 0))
-        #self.image = pygame.transform.rotate(self.image, self.angle)
 
-    
+        #ROTATE - YOU MUST CREATE COPY OF THE IMAGE IN __INIT__() orginal_image = image.copy()
+        self.angle = self.direction.angle_to(pygame.Vector2(0, 1))
+        self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+
     def draw(self):
         GAME.SCREEN.blit(self.image, self.rect)
         return
