@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite): ##Q what does sprite class mean?
         
         # Sprite Image
         self.image = pygame.image.load("images/robotsprite.png")
-        self.image = pygame.transform.scale(self.image, (75, 75))
+        self.image = pygame.transform.scale(self.image, (50, 50))
         self.originalimage = self.image.copy() #need original image to rotate
 
         # Sprite Movement
@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite): ##Q what does sprite class mean?
 
         # health
         self.health = 100
+        self.on_platform = False
 
         # Sprite Positioning
         self.rect = self.image.get_rect() # gets rectangle of the image #
@@ -40,63 +41,66 @@ class Player(pygame.sprite.Sprite): ##Q what does sprite class mean?
         screen.blit(self.image, self.rect)
         return
     
-    # Updates the sprite every frame
+        # Updates the sprite every frame
     def update(self, pressed, mouse_pos, mouse_buttons):
-
+        # Apply movement
         self.rect.centerx += self.hspeed
         self.rect.centery += self.vspeed
 
-        if self.vspeed > 0:
-            on_platform = False
-            for platform in GAME.PLATFORM_GROUP:
-                collision = pygame.sprite.collide_rect(self, platform)
-                if collision:
-                    if self.is_sprite_landing_on_platform(platform.rect, align=True):
-                        on_platform = True
+        self.on_platform = False  # Start assuming we're not on a platform
 
-            if on_platform == False:
-                self.vspeed += self.gravity  
-        elif pressed[pygame.K_w] and self.vspeed == 0:
+        for platform in GAME.PLATFORM_GROUP:
+            if self.rect.colliderect(platform.rect):
+                cliprect = self.rect.clip(platform.rect)
+
+                if cliprect.width < cliprect.height:
+                    # Horizontal collision
+                    if self.rect.centerx < platform.rect.centerx:
+                        self.rect.right = platform.rect.left
+                    else:
+                        self.rect.left = platform.rect.right
+                    self.hspeed = 0
+                else:
+                    # Vertical collision
+                    if self.rect.centery < platform.rect.centery:
+                        self.rect.bottom = platform.rect.top
+                        self.vspeed = 0
+                        self.on_platform = True
+                    else:
+                        self.rect.top = platform.rect.bottom
+                        self.vspeed = 0
+
+        # Check if the sprite is just above a platform (used for jump checks)
+        if not self.on_platform:
+            test_rect = self.rect.copy()
+            test_rect.y += 1  # Just below feet
+            for platform in GAME.PLATFORM_GROUP:
+                if test_rect.colliderect(platform.rect):
+                    self.on_platform = True
+                    break
+
+        # Jumping and gravity
+        if pressed[pygame.K_w] and self.on_platform:
             self.vspeed = -5
-        else:
+        elif not self.on_platform:
             self.vspeed += self.gravity
 
+        # Horizontal movement
         if pressed[pygame.K_a]:
             self.hspeed = -5
         elif pressed[pygame.K_d]:
             self.hspeed = 5
         else:
+            # Apply friction
             if abs(self.hspeed) > 0:
-                self.hspeed += (self.friction)*-1*(self.hspeed/abs(self.hspeed))
+                self.hspeed -= self.friction * (self.hspeed / abs(self.hspeed))
                 if abs(self.hspeed) < 0.1:
                     self.hspeed = 0
 
+        # Keep sprite within screen bounds (wrap around)
         screen_rect = pygame.Rect((0, 0), GAME.SCREEN.get_size())
         GAME.is_sprite_outside_rectangle(self, screen_rect, wrap=True)
 
-        #cap vspeed
+        # Cap falling speed
         if self.vspeed > 10:
             self.vspeed = 10
-        
-        return
-
-    def is_sprite_landing_on_platform(self, rectangle, align=True):
-        landing = False
-        if self.rect.top < rectangle.bottom and self.vspeed < 0:
-            if align:
-                self.rect.top = rectangle.bottom
-                self.vspeed = 0
-        elif self.rect.bottom > rectangle.top:
-            if align:
-                self.rect.bottom = rectangle.top - 0.1
-                self.vspeed = 0
-            landing = True
-        elif self.rect.left < rectangle.right:
-            if align:
-                self.rect.left = rectangle.left
-                self.hspeed = 0
-        elif self.rect.right > rectangle.left:
-            if align:
-                self.rect.right = rectangle.left
-                self.hspeed = 0
-        return landing

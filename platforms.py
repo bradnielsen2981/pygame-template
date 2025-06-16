@@ -10,6 +10,7 @@ class Platform(pygame.sprite.Sprite):
         self.image.fill((200, 10, 10))  # Green color
         self.rect = self.image.get_rect(center=position)
         self.position = position
+        GAME.PLATFORM_GROUP.add(self)  # Add the platform to the global platform group
         return
 
     #moving platform?

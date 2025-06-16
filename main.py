@@ -25,8 +25,26 @@ GAME.EXIT = False
 GAME.STATE = "Start Game"
 GAME.PLATFORM_GROUP = pygame.sprite.Group()
 
-p = Platform((0,680),1024,68)
-GAME.PLATFORM_GROUP.add(p)
+grid = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,1,1,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+        [0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+def create_platforms_from_grid(grid):
+    for y, row in enumerate(grid):
+        for x, cell in enumerate(row):
+            if cell == 1:  # If the cell is a platform
+                p = Platform((x * 64, y * 64), 64, 64)
+
+create_platforms_from_grid(grid)  # Create platforms from the grid
 
 
 '''-------------------------- Game Loop --------------------------'''
